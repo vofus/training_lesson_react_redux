@@ -1,18 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import store from '../store';
-
-const mapStateToProps = function (store) {
-    return {
-        color: store.color
-    };
-}
 
 class Text extends Component {
     render() {
         let color = this.props.color,
             style = { color: color };
-        console.log('Text-color: ', color);
         return (
             <div className="border">
                 <h2 style={ style }>Header 01</h2>
@@ -38,6 +30,12 @@ class Text extends Component {
             </div>
         );
     }
+}
+
+function mapStateToProps(state) {
+    return {
+        color: state.color
+    };
 }
 
 export default connect(mapStateToProps)(Text);

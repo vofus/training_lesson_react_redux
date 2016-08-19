@@ -5,6 +5,7 @@
   "author": "Vofus",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.13.1",
     "babel-core": "6.13.2",
     "babel-loader": "6.2.4",
     "babel-preset-es2015": "6.13.2",
@@ -16,15 +17,18 @@
     "react": "15.3.0",
     "react-dom": "15.3.0",
     "react-hot-loader": "1.3.0",
+    "redux-thunk": "^2.1.0",
     "webpack": "1.13.1"
   },
   "devDependencies": {
+    "axios": "^0.13.1",
     "babel-eslint": "^6.1.2",
     "babel-preset-stage-2": "^6.13.0",
     "react-color": "^2.2.2",
     "react-redux": "^4.4.5",
     "react-router": "^2.6.1",
     "redux": "^3.5.2",
+    "redux-thunk": "^2.1.0",
     "webpack-dev-server": "1.14.1"
   }
 }

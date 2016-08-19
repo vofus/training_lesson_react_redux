@@ -9,9 +9,9 @@ export default (
     <Router history={ browserHistory }>
         <Route path="/" component={ MainLayout }>
             <IndexRoute component={ ColorPickerComponent } />
-            <Route path="color-picker" component={ ColorPickerComponent }/>
-            <Route path="text" component={ Text }/>
-            <Route path="photos-by-color" component={ PhotosByColor }/>
+            <Route path="/color-picker" component={ ColorPickerComponent }/>
+            <Route path="/text" component={ Text }/>
+            <Route path="/photos-by-color" component={ PhotosByColor }/>
         </Route>
     </Router>
 );

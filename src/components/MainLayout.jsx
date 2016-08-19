@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import store from '../store';
 
 class MainLayout extends Component {
+	// Метод переключения вкладок
 	changeTab(event) {
-		console.log('Click!');
 		let target = event.target,
 			self = this;
 
@@ -24,24 +23,23 @@ class MainLayout extends Component {
 				return;
 			});
 			node.classList.add('active');
-			console.log(Array.isArray(tabs));
 		}
 	}
 	render() {
-		let style = {
-			color: this.props.color
-		}
+		let { color } = this.props,
+			style = { color: color };
+
 		return (
 			<div className="container">
 				<ul className="nav nav-tabs color-picker__nav" onClick={ this.changeTab.bind(this) }>
 					<li role="presentation" className="active">
-						<Link to="color-picker">Color Picker</Link>
+						<Link to="/color-picker">Color Picker</Link>
 					</li>
 					<li role="presentation">
-						<Link to="text">Text</Link>
+						<Link to="/text">Text</Link>
 					</li>
 					<li role="presentation">
-						<Link to="photos-by-color">Photos by color</Link>
+						<Link to="/photos-by-color">Photos by color</Link>
 					</li>
 					<span className="color-name" style={ style }>Current color: <span>{ this.props.colorName }</span></span>
 				</ul>
@@ -53,10 +51,10 @@ class MainLayout extends Component {
 	}
 }
 
-const mapStateToProps = function (store) {
+function mapStateToProps(state) {
 	return {
-		color: store.color,
-		colorName: store.colorName
+		color: state.color,
+		colorName: state.colorName
 	};
 }
 

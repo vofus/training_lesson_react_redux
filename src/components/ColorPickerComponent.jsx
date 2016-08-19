@@ -1,44 +1,46 @@
 import React, { Component } from 'react';
 import { SketchPicker } from 'react-color';
 import { connect } from 'react-redux';
-import store from '../store';
 import classifier from '../libs/color-classifier/color_classifier_es6';
 
-const changeColor = function(color, colorName) {
-    return {
-        type: 'CHANGE_COLOR',
-        color: color,
-        colorName: colorName
-    }
-}
-
 class ColorPickerComponent extends Component {
-    getNameColor(hexColor) {
-        return classifier.classify(hexColor);
-    }
     render() {
-        let color = this.props.color,
+        let { color, onChangeColor } = this.props,
             style = { backgroundColor: color };
-        console.log(color);
 
         return (
             <div className="color-picker__wrap border" style={ style }>
                 <div className="color-picker">
-                    <SketchPicker color={ color } onChange={ this.onChangeColor.bind(this) }/>
+                    <SketchPicker color={ color } onChange={ onChangeColor }/>
                 </div>
             </div>
         );
     }
-    onChangeColor(color) {
-        let colorName = this.getNameColor(color.hex);
+}
 
-        store.dispatch(changeColor(color.hex, colorName));
+function changeColor(colorObj) {
+    let colorCode =colorObj.hex,
+        colorName = classifier.classify(colorCode);
+
+    return {
+        type: 'CHANGE_COLOR',
+        color: colorCode,
+        colorName: colorName
     }
 }
 
-const mapStateToProps = function(store) {
+function mapStateToProps(state) {
     return {
-        color: store.color
+        color: state.color
     };
 }
-export default connect(mapStateToProps)(ColorPickerComponent);
+
+function mapDispatchToProps(dispatch) {
+    return {
+        onChangeColor: (colorObj) => {
+            dispatch(changeColor(colorObj));
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ColorPickerComponent);
