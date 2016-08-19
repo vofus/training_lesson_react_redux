@@ -7,7 +7,7 @@ import MainLayout from './components/MainLayout';
 
 export default (
     <Router history={ browserHistory }>
-        <Route path="/react-redux-01" component={ MainLayout }>
+        <Route path="/" component={ MainLayout }>
             <IndexRoute component={ ColorPickerComponent } />
             <Route path="color-picker" component={ ColorPickerComponent }/>
             <Route path="text" component={ Text }/>
