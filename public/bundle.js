@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "12371ac59af401615e83"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "94323ba76152505ad368"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -31689,7 +31689,7 @@
 	
 	var _PhotosByColor2 = _interopRequireDefault(_PhotosByColor);
 	
-	var _MainLayout = __webpack_require__(607);
+	var _MainLayout = __webpack_require__(608);
 	
 	var _MainLayout2 = _interopRequireDefault(_MainLayout);
 	
@@ -95338,7 +95338,8 @@
 	    fetching: false,
 	    fetched: false,
 	    photos: [],
-	    error: null
+	    error: null,
+	    imgId: 0
 	};
 	
 	var middleware = (0, _redux.applyMiddleware)(_reduxThunk2.default, (0, _reduxLogger2.default)());
@@ -95360,6 +95361,9 @@
 	            break;
 	        case types.FETCH_PHOTOS_ERROR:
 	            return _extends({}, state, { fetching: false, error: action.payload });
+	            break;
+	        case types.SELECT_IMG:
+	            return _extends({}, state, { imgId: action.payload });
 	            break;
 	        default:
 	            return state;
@@ -95386,11 +95390,13 @@
 	var FETCH_PHOTOS_START = 'FETCH_PHOTOS_START';
 	var RECEIVE_PHOTOS = 'RECEIVE_PHOTOS';
 	var FETCH_PHOTOS_ERROR = 'FETCH_PHOTOS_ERROR';
+	var SELECT_IMG = 'SELECT_IMG';
 	
 	exports.CHANGE_COLOR = CHANGE_COLOR;
 	exports.FETCH_PHOTOS_START = FETCH_PHOTOS_START;
 	exports.RECEIVE_PHOTOS = RECEIVE_PHOTOS;
 	exports.FETCH_PHOTOS_ERROR = FETCH_PHOTOS_ERROR;
+	exports.SELECT_IMG = SELECT_IMG;
 	
 	/* REACT HOT LOADER */ }).call(this); } finally { if (true) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(574); if (makeExportsHot(module, __webpack_require__(155))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "actionTypes.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)))
@@ -95793,6 +95799,10 @@
 	
 	var _photo2 = _interopRequireDefault(_photo);
 	
+	var _Modal = __webpack_require__(607);
+	
+	var _Modal2 = _interopRequireDefault(_Modal);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -95816,23 +95826,45 @@
 	            var _props = this.props;
 	            var photos = _props.photos;
 	            var fetched = _props.fetched;
+	            var imgId = _props.imgId;
+	            var handleModal = _props.handleModal;
 	
 	            if (fetched === false) {
 	                return _react2.default.createElement(
-	                    'h2',
-	                    null,
-	                    'Photos by Color'
+	                    'div',
+	                    { className: 'photos__wrap border' },
+	                    _react2.default.createElement(
+	                        'h2',
+	                        null,
+	                        'Select color for serch photos'
+	                    )
+	                );
+	            }
+	            if (photos.length === 0) {
+	                return _react2.default.createElement(
+	                    'div',
+	                    { className: 'photos__wrap border' },
+	                    _react2.default.createElement(
+	                        'h2',
+	                        null,
+	                        'Photos not found'
+	                    )
 	                );
 	            }
 	
 	            return _react2.default.createElement(
 	                'div',
-	                { className: 'photos__wrap border' },
+	                { className: 'photos__wrap border', onClick: handleModal },
 	                _react2.default.createElement(
 	                    'div',
 	                    { className: 'row' },
+	                    _react2.default.createElement(_Modal2.default, { src: photos[imgId].url_l,
+	                        title: photos[imgId].title }),
 	                    photos.map(function (item, index) {
-	                        return _react2.default.createElement(_photo2.default, { key: index, src: item.url_q, title: item.title });
+	                        return _react2.default.createElement(_photo2.default, { id: index,
+	                            key: index,
+	                            src: item.url_q,
+	                            title: item.title });
 	                    })
 	                )
 	            );
@@ -95842,14 +95874,56 @@
 	    return PhotosByColor;
 	}(_react.Component);
 	
-	function mapStateToProps(state) {
+	function _handleModal(event) {
+	    var target = event.target,
+	        modal = document.getElementById('modal'),
+	        imgId = 0,
+	        self = this;
+	
+	    if (target.tagName === 'IMG') {
+	        if (target.classList.contains('modal__img')) {
+	            return {
+	                type: 'DEFAULT'
+	            };
+	        }
+	        if (target.classList.contains('photo')) {
+	            imgId = parseInt(target.getAttribute('data-img'), 10);
+	            modal.classList.remove('hidden');
+	        }
+	        return {
+	            type: 'SELECT_IMG',
+	            payload: imgId
+	        };
+	    }
+	    if (target.id === modal.id) {
+	        modal.classList.add('hidden');
+	        return {
+	            type: 'SELECT_IMG',
+	            payload: 0
+	        };
+	    }
 	    return {
-	        photos: state.photos,
-	        fetched: state.fetched
+	        type: 'DEFAULT'
 	    };
 	}
 	
-	exports.default = (0, _reactRedux.connect)(mapStateToProps)(PhotosByColor);
+	function mapStateToProps(state) {
+	    return {
+	        photos: state.photos,
+	        fetched: state.fetched,
+	        imgId: state.imgId
+	    };
+	}
+	
+	function mapDispatchToProps(dispatch) {
+	    return {
+	        handleModal: function handleModal(event) {
+	            dispatch(_handleModal(event));
+	        }
+	    };
+	}
+	
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(PhotosByColor);
 	
 	/* REACT HOT LOADER */ }).call(this); } finally { if (true) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(574); if (makeExportsHot(module, __webpack_require__(155))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "PhotosByColor.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)))
@@ -95895,7 +95969,11 @@
 	            return _react2.default.createElement(
 	                "div",
 	                { className: "photo__col col-xs-6 col-sm-3 col-md-2" },
-	                _react2.default.createElement("img", { className: "photo img-responsive", src: this.props.src, alt: this.props.title, title: this.props.title })
+	                _react2.default.createElement("img", { className: "photo img-responsive",
+	                    src: this.props.src,
+	                    alt: this.props.title,
+	                    title: this.props.title,
+	                    "data-img": this.props.id })
 	            );
 	        }
 	    }]);
@@ -95910,6 +95988,76 @@
 
 /***/ },
 /* 607 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/* REACT HOT LOADER */ if (true) { (function () { var ReactHotAPI = __webpack_require__(77), RootInstanceProvider = __webpack_require__(85), ReactMount = __webpack_require__(87), React = __webpack_require__(155); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
+	
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(155);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Modal = function (_Component) {
+	    _inherits(Modal, _Component);
+	
+	    function Modal() {
+	        _classCallCheck(this, Modal);
+	
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(Modal).apply(this, arguments));
+	    }
+	
+	    _createClass(Modal, [{
+	        key: "render",
+	        value: function render() {
+	            var _props = this.props;
+	            var src = _props.src;
+	            var title = _props.title;
+	
+	            return _react2.default.createElement(
+	                "div",
+	                { id: "modal", className: "photos-modal__wrap hidden" },
+	                _react2.default.createElement(
+	                    "div",
+	                    { className: "photos-modal__box" },
+	                    _react2.default.createElement("img", { className: "modal__img img-responsive",
+	                        src: this.props.src,
+	                        alt: this.props.title,
+	                        title: this.props.title }),
+	                    _react2.default.createElement(
+	                        "p",
+	                        { className: "photos-modal__title" },
+	                        this.props.title
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return Modal;
+	}(_react.Component);
+	
+	exports.default = Modal;
+	
+	/* REACT HOT LOADER */ }).call(this); } finally { if (true) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(574); if (makeExportsHot(module, __webpack_require__(155))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "Modal.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)))
+
+/***/ },
+/* 608 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/* REACT HOT LOADER */ if (true) { (function () { var ReactHotAPI = __webpack_require__(77), RootInstanceProvider = __webpack_require__(85), ReactMount = __webpack_require__(87), React = __webpack_require__(155); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
@@ -95982,6 +96130,11 @@
 					'div',
 					{ className: 'container' },
 					_react2.default.createElement(
+						'h2',
+						{ className: 'text-center' },
+						'Search engine for Flickr'
+					),
+					_react2.default.createElement(
 						'ul',
 						{ className: 'nav nav-tabs color-picker__nav', onClick: this.changeTab.bind(this) },
 						_react2.default.createElement(
@@ -96010,21 +96163,25 @@
 								{ to: '/photos-by-color' },
 								'Photos by color'
 							)
-						),
-						_react2.default.createElement(
-							'span',
-							{ className: 'color-name', style: style },
-							'Current color: ',
-							_react2.default.createElement(
-								'span',
-								null,
-								this.props.colorName
-							)
 						)
 					),
 					_react2.default.createElement(
 						'div',
 						null,
+						_react2.default.createElement(
+							'div',
+							{ className: 'current-color__wrap' },
+							_react2.default.createElement(
+								'span',
+								{ className: 'color-name', style: style },
+								'Current color: ',
+								_react2.default.createElement(
+									'span',
+									null,
+									this.props.colorName
+								)
+							)
+						),
 						this.props.children
 					)
 				);

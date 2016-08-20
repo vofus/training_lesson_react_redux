@@ -31,6 +31,7 @@ class MainLayout extends Component {
 
 		return (
 			<div className="container">
+				<h2 className="text-center">Search engine for Flickr</h2>
 				<ul className="nav nav-tabs color-picker__nav" onClick={ this.changeTab.bind(this) }>
 					<li role="presentation" className="active">
 						<Link to="/color-picker">Color Picker</Link>
@@ -41,9 +42,11 @@ class MainLayout extends Component {
 					<li role="presentation">
 						<Link to="/photos-by-color">Photos by color</Link>
 					</li>
-					<span className="color-name" style={ style }>Current color: <span>{ this.props.colorName }</span></span>
 				</ul>
 				<div>
+					<div className="current-color__wrap">
+						<span className="color-name" style={ style }>Current color: <span>{ this.props.colorName }</span></span>
+					</div>
 					{ this.props.children }
 				</div>
 			</div>

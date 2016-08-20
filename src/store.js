@@ -9,7 +9,8 @@ const initialState = {
     fetching: false,
     fetched: false,
     photos: [],
-    error: null
+    error: null,
+    imgId: 0
 };
 
 const middleware = applyMiddleware(thunk, logger());
@@ -28,6 +29,9 @@ function reducer(state = initialState, action) {
             break;
         case types.FETCH_PHOTOS_ERROR:
             return {...state, fetching: false, error: action.payload};
+            break;
+        case types.SELECT_IMG:
+            return {...state, imgId: action.payload};
             break;
         default:
             return state;
