@@ -1,19 +1,35 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import store from '../store';
-
-const mapStateToProps = function (store) {
-    return {
-        color: store.color
-    };
-}
+import Photo from './photo';
 
 class PhotosByColor extends Component {
     render() {
+        let { photos, fetched } = this.props;
+        if (fetched === false) {
+            return (
+                <h2>Photos by Color</h2>
+            );
+        }
+
         return (
-            <h2>Photos by color</h2>
+            <div className="photos__wrap border">
+                <div className="row">
+                    {
+                        photos.map((item, index) => {
+                            return <Photo key={ index } src={ item.url_q } title={ item.title }/>
+                        })
+                    }
+                </div>
+            </div>
         );
     }
+}
+
+function mapStateToProps(state) {
+    return {
+        photos: state.photos,
+        fetched: state.fetched
+    };
 }
 
 export default connect(mapStateToProps)(PhotosByColor);

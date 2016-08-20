@@ -30,3 +30,9 @@
 .color-name > span {
 	text-transform: uppercase;
 }
+.photo__col {
+	margin: 15px 0;
+}
+.photo {
+	margin: 0 auto;
+}

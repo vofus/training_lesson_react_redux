@@ -1,19 +1,37 @@
-import { createStore } from 'redux';
+import { applyMiddleware, createStore } from 'redux';
 import * as types from './constants/actionTypes';
+import logger from 'redux-logger';
+import thunk from 'redux-thunk';
 
 const initialState = {
     color: '#000000',
-    colorName: 'Black'
+    colorName: 'Black',
+    fetching: false,
+    fetched: false,
+    photos: [],
+    error: null
 };
 
-function setColor(state = initialState, action) {
+const middleware = applyMiddleware(thunk, logger());
+const store = createStore(reducer, middleware);
+
+function reducer(state = initialState, action) {
     switch (action.type) {
         case types.CHANGE_COLOR:
             return {...state, color: action.color, colorName: action.colorName};
+            break;
+        case types.FETCH_PHOTOS_START:
+            return {...state, fetching: true};
+            break;
+        case types.RECEIVE_PHOTOS:
+            return {...state, fetching: false, fetched: true, photos: action.payload};
+            break;
+        case types.FETCH_PHOTOS_ERROR:
+            return {...state, fetching: false, error: action.payload};
+            break;
         default:
             return state;
     }
 }
 
-const store = createStore(setColor);
 export default store;
