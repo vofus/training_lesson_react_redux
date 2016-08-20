@@ -7,6 +7,12 @@ import axios from 'axios';
 import store from '../store';
 
 class ColorPickerComponent extends Component {
+    componentDidMount() {
+        let fetched = store.getState().fetched;
+        if (fetched === false) {
+            downLoad(store);
+        }
+    }
     render() {
         let { color, colorName, onChangeColor } = this.props,
             style = { backgroundColor: color };

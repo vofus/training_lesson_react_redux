@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "94323ba76152505ad368"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "ae1b0b9815c35a33b4d5"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -37387,6 +37387,14 @@
 	    }
 	
 	    _createClass(ColorPickerComponent, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            var fetched = _store2.default.getState().fetched;
+	            if (fetched === false) {
+	                downLoad(_store2.default);
+	            }
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _props = this.props;
