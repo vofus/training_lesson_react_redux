@@ -2,8 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Photo from './photo';
 import Modal from './Modal';
+import * as api from '../constants/fetch-api';
+import axios from 'axios';
+import store from '../store';
 
 class PhotosByColor extends Component {
+    componentDidMount() {
+        downLoad(store);
+    }
     render() {
         let { photos, fetched, imgId, handleModal } = this.props;
         if (fetched === false) {
@@ -40,6 +46,33 @@ class PhotosByColor extends Component {
     }
 }
 
+function downLoad(store) {
+    store.dispatch((dispatch) => {
+        const query = store.getState().colorName,
+            url   = `${api.URL}${api.FORMAT}&${api.METHOD}&${api.EXTRAS}&${api.KEY}&${api.PER_PAGE}&${api.Q}${query}`;
+        dispatch({type: 'FETCH_PHOTOS_START'});
+        axios.get(url)
+            .then((response) => {
+                let data = response.data;
+                let i = 0;               // начальный индекс извлекаемой строки
+                let j = data.length-1;     // конечный индекс извлекаемой строки
+
+                while (data[i] !== '{') {
+                    i++;
+                }
+                while (data[j] !== '}') {
+                    j--;
+                }
+                data = data.slice(i, j+1);
+                data = JSON.parse(data);
+                dispatch({type: 'RECEIVE_PHOTOS', payload: data.photos.photo});
+            })
+            .catch((err) => {
+                dispatch({type: 'FETCH_PHOTOS_ERROR', payload: err});
+            });
+    });
+}
+
 function handleModal(event) {
     let target = event.target,
         modal = document.getElementById('modal'),
@@ -55,6 +88,7 @@ function handleModal(event) {
         if (target.classList.contains('photo')) {
             imgId = parseInt(target.getAttribute('data-img'), 10);
             modal.classList.remove('hidden');
+            setTimeout(fadeInModalPhoto, 400);
         }
         return {
             type: 'SELECT_IMG',
@@ -63,6 +97,7 @@ function handleModal(event) {
     }
     if (target.id === modal.id) {
         modal.classList.add('hidden');
+        fadeOutModalPhoto();
         return {
             type: 'SELECT_IMG',
             payload: 0
@@ -71,6 +106,16 @@ function handleModal(event) {
     return {
         type: 'DEFAULT'
     };
+}
+
+function fadeInModalPhoto() {
+    let elem = document.getElementsByClassName('modal__img')[0];
+    elem.classList.add('visible');
+}
+
+function fadeOutModalPhoto() {
+    let elem = document.getElementsByClassName('modal__img')[0];
+    elem.classList.remove('visible');
 }
 
 function mapStateToProps(state) {
