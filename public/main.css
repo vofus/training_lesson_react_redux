@@ -1,6 +1,3 @@
-.hidden {
-	display: none;
-}
 .color-picker__wrap {
 	position: relative;
 	height: 600px;
@@ -43,6 +40,8 @@
 .photo {
 	margin: 0 auto;
 	cursor: pointer;
+	opacity: 0;
+	transition: opacity 1s ease-in-out;
 }
 .photos-modal__wrap {
 	z-index: 100;
@@ -65,4 +64,15 @@
 	margin: 10px 0;
 	font-size: 1.5em;
 	color: #fff;
+}
+.modal__img {
+	opacity: 0;
+	transition: opacity .5s ease-in-out;
+}
+/* === Help Classes === */
+.hidden {
+	display: none;
+}
+.visible {
+	opacity: 1;
 }
